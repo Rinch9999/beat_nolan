@@ -29,7 +29,7 @@
             justify-content: space-between;
         }
 
-        。container {
+        .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
@@ -361,7 +361,7 @@
         let levelUpScore;
         let currentLevel = 1;
 
-        // 乔纳森·诺兰的图片URL
+        // 乔纳森·诺兰的图片URL（确保图片文件与HTML在同一目录，文件名一致）
         const nolanImageUrl = 'nolan.jpg';
 
         // 设置目标的图片
@@ -418,7 +418,7 @@
             currentLevel++;
             levelDisplay.textContent = currentLevel;
             
-            // 随着关卡提升，移动速度加快（最低200ms）
+            // 随着关卡提升，移动速度加快（最低200ms，避免过快无法击中）
             const newSpeed = Math.max(200, currentSpeed - 50);
             
             // 清除旧的移动计时器，设置新的
@@ -447,7 +447,7 @@
             timeLeft--;
             timerDisplay.textContent = timeLeft;
 
-            // 最后10秒添加视觉警告
+            // 最后10秒添加视觉警告（红色闪烁）
             if (timeLeft <= 10) {
                 timerDisplay.style.color = '#e74c3c';
                 timerDisplay.style.animation = 'pulse 1s infinite';
@@ -476,10 +476,10 @@
 
             // 启动计时器
             timerId = setInterval(updateTimer, 1000);
-            // 启动移动
+            // 启动目标移动
             moveTimerId = setInterval(moveTarget, currentSpeed);
 
-            // 初始移动一次
+            // 初始移动一次（避免目标停留在初始位置）
             moveTarget();
         }
 
@@ -499,18 +499,18 @@
             } else {
                 message = "继续努力！诺兰还在等着你挑战呢！";
             }
-            messageDisplay。textContent = `游戏结束！你的最终得分是：${score}，达到了第${currentLevel}关。${message}`;
+            messageDisplay.textContent = `游戏结束！你的最终得分是：${score}，达到了第${currentLevel}关。${message}`;
 
-            restartButton。style。display = 'inline-block';
+            restartButton.style.display = 'inline-block';
         }
 
-        // 选择难度
+        // 选择难度（绑定按钮点击事件）
         difficultyButtons.forEach(button => {
             button.addEventListener('click', () => {
                 currentSpeed = parseInt(button.dataset.speed);
-                timeLeft = parseInt(button。dataset。time);
-                levelUpScore = parseInt(button。dataset。levelUp);
-                timerDisplay。textContent = timeLeft;
+                timeLeft = parseInt(button.dataset.time);
+                levelUpScore = parseInt(button.dataset.levelUp);
+                timerDisplay.textContent = timeLeft;
                 startGame();
             });
         });
@@ -530,5 +530,3 @@
     </script>
 </body>
 </html>
-
-
