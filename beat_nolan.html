@@ -5,26 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>暴打乔纳森·诺兰</title>
     <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #fdbb2d;
+            --dark: #1a1a2e;
+            --light: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
-            color: white;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: var(--light);
             text-align: center;
             margin: 0;
-            padding: 20px;
-            overflow: hidden;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
             user-select: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 90%;
+        }
+
+        header {
+            margin: 20px 0;
+            animation: fadeIn 1s ease;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin: 0;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(90deg, #ffffff, #fdbb2d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .game-description {
+            font-size: 1.2rem;
+            margin: 15px 0 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
         }
 
         #gameContainer {
             position: relative;
-            width: 800px;
+            width: 100%;
             height: 500px;
             margin: 20px auto;
-            border: 3px solid #fff;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            background-color: rgba(0, 0, 0, 0.4);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        #gameContainer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1), transparent 70%);
+            pointer-events: none;
         }
 
         #target {
@@ -32,71 +89,254 @@
             width: 100px;
             height: 100px;
             cursor: pointer;
-            transition: transform 0.1s;
-            /* 背景图片将在JS中动态设置 */
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
             background-size: cover;
             background-position: center;
             border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            z-index: 2;
+            transform-origin: center;
         }
 
         #target:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        #target.hit {
+            animation: hitEffect 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes hitEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.8) rotate(-10deg); opacity: 0.7; }
+            100% { transform: scale(1) rotate(0); }
         }
 
         #ui {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 20px;
-            font-size: 1.5em;
+            align-items: center;
+            margin: 30px auto;
+            padding: 15px 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 700px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+        }
+
+        .ui-item {
+            font-size: 1.4rem;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            min-width: 120px;
+        }
+
+        .ui-item span {
+            font-weight: bold;
+            color: var(--secondary);
         }
 
         #startButton, #restartButton {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background-color: #e74c3c;
-            color: white;
+            padding: 15px 35px;
+            font-size: 1.3rem;
+            background-color: var(--primary);
+            color: var(--light);
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
-            margin: 10px;
-            transition: background-color 0.3s;
+            margin: 15px;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         #startButton:hover, #restartButton:hover {
             background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5);
+        }
+
+        #startButton:active, #restartButton:active {
+            transform: translateY(1px);
         }
 
         #message {
-            font-size: 2em;
+            font-size: 1.8rem;
             font-weight: bold;
-            margin-top: 20px;
+            margin: 25px auto;
             min-height: 60px;
-            color: #fdbb2d;
-            text-shadow: 2px 2px 4px #000;
+            color: var(--secondary);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            padding: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
         }
 
         #restartButton {
             display: none;
         }
+
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .game-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .difficulty-selection {
+            background-color: rgba(26, 42, 108, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .difficulty-selection h2 {
+            margin-top: 0;
+            color: var(--secondary);
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .difficulty-btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 120px;
+            font-weight: 600;
+        }
+
+        .difficulty-btn.easy {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .difficulty-btn.medium {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .difficulty-btn.hard {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            #gameContainer {
+                height: 400px;
+            }
+
+            #ui {
+                flex-direction: column;
+                gap: 10px;
+                width: 90%;
+            }
+
+            .ui-item {
+                width: 80%;
+                font-size: 1.2rem;
+            }
+
+            #message {
+                font-size: 1.4rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>暴打乔纳森·诺兰</h1>
-    <p>在60秒内，尽情点击那个让你烧脑的“罪魁祸首”！</p>
+    <div class="container">
+        <header>
+            <h1>暴打乔纳森·诺兰</h1>
+            <p class="game-description">在限定时间内，尽情点击那个让你烧脑的"罪魁祸首"！随着关卡提升，目标会变得更快更难击中！</p>
+        </header>
 
-    <div id="ui">
-        <div>时间: <span id="timer">60</span>秒</div>
-        <div>分数: <span id="score">0</span></div>
+        <div id="ui">
+            <div class="ui-item">时间: <span id="timer">60</span>秒</div>
+            <div class="ui-item">分数: <span id="score">0</span></div>
+            <div class="ui-item">关卡: <span id="levelDisplay">1</span></div>
+        </div>
+
+        <div id="buttonContainer">
+            <button id="startButton">开始游戏！</button>
+            <button id="restartButton">再玩一次？</button>
+        </div>
+
+        <div id="gameContainer">
+            <div id="target"></div>
+            <div class="game-overlay" id="difficultyOverlay">
+                <div class="difficulty-selection">
+                    <h2>选择难度</h2>
+                    <div class="difficulty-buttons">
+                        <button class="difficulty-btn easy" data-speed="1000" data-time="60" data-level-up="10">简单</button>
+                        <button class="difficulty-btn medium" data-speed="800" data-time="50" data-level-up="15">中等</button>
+                        <button class="difficulty-btn hard" data-speed="600" data-time="40" data-level-up="20">困难</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="message"></div>
     </div>
 
-    <button id="startButton">开始游戏！</button>
-    <button id="restartButton">再玩一次？</button>
-
-    <div id="gameContainer">
-        <div id="target"></div>
-    </div>
-
-    <div id="message"></div>
+    <footer>
+        <p>游戏仅为娱乐目的，无真实人物攻击意图</p>
+    </footer>
 
     <script>
         // 获取DOM元素
@@ -107,6 +347,9 @@
         const target = document.getElementById('target');
         const messageDisplay = document.getElementById('message');
         const gameContainer = document.getElementById('gameContainer');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const difficultyOverlay = document.getElementById('difficultyOverlay');
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
 
         // 游戏变量
         let score = 0;
@@ -114,12 +357,12 @@
         let gameActive = false;
         let timerId;
         let moveTimerId;
+        let currentSpeed;
+        let levelUpScore;
+        let currentLevel = 1;
 
-        // 乔纳森·诺兰的图片URL (请确保使用你有权使用的图片，这里用一个本地图片路径示例)
-        // 建议把图片放在项目的 `image` 文件夹下并命名为 `nolan.jpg`，然后使用相对路径引用。
+        // 乔纳森·诺兰的图片URL
         const nolanImageUrl = './image/nolan.jpg';
-
-        // （已移除音效）
 
         // 设置目标的图片
         target.style.backgroundImage = `url('${nolanImageUrl}')`;
@@ -148,22 +391,70 @@
             score++;
             scoreDisplay.textContent = score;
 
-            // （音效已移除，保留视觉反馈）
-
-            // 添加一个被击中的动画效果
-            target.style.transform = 'scale(0.9)';
+            // 添加被击中的动画效果
+            target.classList.add('hit');
             setTimeout(() => {
-                target.style.transform = 'scale(1)';
-            }, 100);
+                target.classList.remove('hit');
+            }, 300);
+
+            // 检查是否升级
+            checkLevelUp();
 
             // 击中后立即移动
             moveTarget();
+        }
+
+        // 检查是否升级
+        function checkLevelUp() {
+            const requiredScore = currentLevel * levelUpScore;
+            
+            if (score >= requiredScore) {
+                levelUp();
+            }
+        }
+
+        // 升级处理
+        function levelUp() {
+            currentLevel++;
+            levelDisplay.textContent = currentLevel;
+            
+            // 随着关卡提升，移动速度加快（最低200ms）
+            const newSpeed = Math.max(200, currentSpeed - 50);
+            
+            // 清除旧的移动计时器，设置新的
+            clearInterval(moveTimerId);
+            currentSpeed = newSpeed;
+            moveTimerId = setInterval(moveTarget, currentSpeed);
+            
+            // 显示升级消息
+            showTemporaryMessage(`升级到关卡 ${currentLevel}！速度更快了！`, 1500);
+        }
+
+        // 显示临时消息
+        function showTemporaryMessage(text, duration) {
+            const originalMessage = messageDisplay.textContent;
+            messageDisplay.textContent = text;
+            
+            setTimeout(() => {
+                if (gameActive) {
+                    messageDisplay.textContent = originalMessage;
+                }
+            }, duration);
         }
 
         // 更新计时器
         function updateTimer() {
             timeLeft--;
             timerDisplay.textContent = timeLeft;
+
+            // 最后10秒添加视觉警告
+            if (timeLeft <= 10) {
+                timerDisplay.style.color = '#e74c3c';
+                timerDisplay.style.animation = 'pulse 1s infinite';
+            } else {
+                timerDisplay.style.color = '';
+                timerDisplay.style.animation = '';
+            }
 
             if (timeLeft <= 0) {
                 endGame();
@@ -174,17 +465,19 @@
         function startGame() {
             gameActive = true;
             score = 0;
-            timeLeft = 60;
+            currentLevel = 1;
             scoreDisplay.textContent = score;
+            levelDisplay.textContent = currentLevel;
             timerDisplay.textContent = timeLeft;
             messageDisplay.textContent = "";
             startButton.style.display = 'none';
             restartButton.style.display = 'none';
+            difficultyOverlay.classList.remove('active');
 
             // 启动计时器
             timerId = setInterval(updateTimer, 1000);
-            // 启动移动，并设置一个更快的移动间隔
-            moveTimerId = setInterval(moveTarget, 800); // 每800毫秒移动一次
+            // 启动移动
+            moveTimerId = setInterval(moveTarget, currentSpeed);
 
             // 初始移动一次
             moveTarget();
@@ -197,26 +490,43 @@
             clearInterval(moveTimerId);
 
             let message = "";
-            if (score > 50) {
-                message = "天呐！你是个无情的暴打机器！诺兰的叙事迷宫被你彻底砸烂了！";
-            } else if (score > 30) {
-                message = "干得漂亮！你成功让诺兰体验了一次他自己的非线性叙事！";
-            } else if (score > 15) {
-                message = "不错！但诺兰可能还在构思更烧脑的剧情来报复你。";
+            if (score > currentLevel * levelUpScore * 2) {
+                message = "太厉害了！你已经超越了诺兰的所有叙事诡计！";
+            } else if (score > currentLevel * levelUpScore) {
+                message = "很棒！诺兰对你刮目相看了！";
+            } else if (score > currentLevel * levelUpScore / 2) {
+                message = "不错！但还需要多练习才能完全破解诺兰的迷宫！";
             } else {
-                message = "呃...你是不是被他的剧情绕晕了，没力气打了？";
+                message = "继续努力！诺兰还在等着你挑战呢！";
             }
-            messageDisplay.textContent = `游戏结束！你的最终得分是：${score}。${message}`;
+            messageDisplay。textContent = `游戏结束！你的最终得分是：${score}，达到了第${currentLevel}关。${message}`;
 
-            restartButton.style.display = 'inline-block';
+            restartButton。style。display = 'inline-block';
         }
 
-        // 事件监听
-        startButton.addEventListener('click', startGame);
-        restartButton.addEventListener('click', startGame);
-        target.addEventListener('click', hitTarget);
+        // 选择难度
+        difficultyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentSpeed = parseInt(button.dataset.speed);
+                timeLeft = parseInt(button。dataset。time);
+                levelUpScore = parseInt(button。dataset。levelUp);
+                timerDisplay。textContent = timeLeft;
+                startGame();
+            });
+        });
 
-        // 音效已移除 — 不再预加载声音
+        // 事件监听
+        startButton.addEventListener('click', () => {
+            difficultyOverlay.classList.add('active');
+        });
+        
+        restartButton.addEventListener('click', () => {
+            currentLevel = 1;
+            difficultyOverlay.classList.add('active');
+            messageDisplay.textContent = "";
+        });
+        
+        target.addEventListener('click', hitTarget);
     </script>
 </body>
 </html>
